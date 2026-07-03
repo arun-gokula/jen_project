@@ -4,6 +4,7 @@ pipeline {
     environment {
         IMAGE_NAME     = "hello-world-app"
         CONTAINER_NAME = "hello-world-container"
+        DOCKER         = "C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker.exe"
     }
 
     stages {
@@ -15,25 +16,25 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                bat "docker build -t %IMAGE_NAME% ."
+                bat "\"%DOCKER%\" build -t %IMAGE_NAME% ."
             }
         }
 
         stage('Remove Old Container') {
             steps {
-                bat "docker rm -f %CONTAINER_NAME% || exit 0"
+                bat "\"%DOCKER%\" rm -f %CONTAINER_NAME% || exit 0"
             }
         }
 
         stage('Run Container') {
             steps {
-                bat "docker run -d --name %CONTAINER_NAME% -p 80:80 %IMAGE_NAME%"
+                bat "\"%DOCKER%\" run -d --name %CONTAINER_NAME% -p 80:80 %IMAGE_NAME%"
             }
         }
 
         stage('Verify') {
             steps {
-                bat "docker ps --filter name=%CONTAINER_NAME%"
+                bat "\"%DOCKER%\" ps --filter name=%CONTAINER_NAME%"
             }
         }
     }
